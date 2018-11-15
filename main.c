@@ -2,15 +2,11 @@
 #include "LEDController.h"
 #include "EffectsController.h"
 #include "DACcontroller.h"
-
-
-
-
+#include "stm32l4xx.h"
 
 int main(void){
 initADC();
-initDAC();
+DAC_initialize();
 initEffects();
 initLED();
-
 }
