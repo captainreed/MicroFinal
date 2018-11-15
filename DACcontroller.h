@@ -2,6 +2,6 @@
 #define DACCONTROLLER_H
 
 
-void initDAC();
+void DAC_initialize(void);
 	
 #endif
