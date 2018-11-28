@@ -10,6 +10,7 @@
       <TargetName>Target 1</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
+      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -390,11 +391,6 @@
               <FileName>core_cm4.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\core_cm4.h</FilePath>
-            </File>
-            <File>
-              <FileName>startup_stm32l476xx.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>.\startup_stm32l476xx.s</FilePath>
             </File>
             <File>
               <FileName>stm32l476xx.h</FileName>

@@ -16,20 +16,13 @@ void initADC()//initialize the ADC
 	ADC1->SQR1 &=(0xFFFFFFF0); //step 11
 	ADC1->SQR1 |=(0x180); //step 12
 	
-			
 }
 
 void readADC()
 {
 	
 }
-void sysTick_Initialize(uint32_t ticks) {
-SysTick->CTRL = 0;
-SysTick->LOAD = ticks-1;
-NVIC_SetPriority(SysTick_IRQn, (1<<__NVIC_PRIO_BITS)-1);
-SysTick->VAL=0;
-SysTick->CTRL |= SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_TICKINT_Msk;
-}
+
 void ADC1_Wakeup(void) {
 int wait_time;
 if((ADC1->CR & ADC_CR_DEEPPWD) == ADC_CR_DEEPPWD) {

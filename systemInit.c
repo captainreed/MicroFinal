@@ -1,9 +1,6 @@
 #include "stm32l4xx.h"
 #include "systemInit.h"
 
-
-
-
 void configureInterrupts()
 {
 RCC->AHB2ENR |=RCC_AHB2ENR_GPIOAEN;     //enables GPIO_A clock
@@ -21,21 +18,10 @@ RCC->AHB2ENR |=RCC_AHB2ENR_GPIOAEN;     //enables GPIO_A clock
 	EXTI->IMR1 |= (0x00000007);     //enables interrupt mask register for interrupt 0, 1, and 2
 }
 
-void SysTick_Initialize()
-{
-	//Disable SysTick IRQ
-	SysTick->CTRL = 0;
-	//Set Reload register
-	SysTick->LOAD = 0x003D0900 - 1;
-	//Make SysTick least urgent (i.e., highest priority number)
-	NVIC_SetPriority (SysTick_IRQn, (1<<__NVIC_PRIO_BITS) - 1);
-	//Reset counter
-	SysTick->VAL = 0;
-	//Select processor clock as SysTick clock (1 = processor clock, 0 = external)
-	SysTick->CTRL |= SysTick_CTRL_CLKSOURCE_Msk;
-	//Enable SysTick exception request, 1=counting
-	SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
-	//Enable SysTick timer
-	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;
-	
+void sysTick_Initialize() {
+SysTick->CTRL = 0;
+SysTick->LOAD = 8000-1;//set the systick to go off every 2 ms
+NVIC_SetPriority(SysTick_IRQn, (1<<__NVIC_PRIO_BITS)-1);
+SysTick->VAL=0;
+SysTick->CTRL |= SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_TICKINT_Msk;
 }
