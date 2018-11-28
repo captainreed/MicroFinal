@@ -3,5 +3,7 @@
 
 
 void initEffects();
+void handleEffects();
+void configureInterrupts();
 	
 #endif

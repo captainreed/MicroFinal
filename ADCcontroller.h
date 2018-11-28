@@ -3,5 +3,7 @@
 
 
 void initADC();
+void readADC();
+void SysTick_Initialize();
 	
 #endif

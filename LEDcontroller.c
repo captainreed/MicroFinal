@@ -7,3 +7,7 @@ void initLED()//initialize the ADC
 	
 	
 }
+void writeLED()
+{
+	
+}

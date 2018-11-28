@@ -7,3 +7,10 @@ void initEffects()//initialize the ADC
 	
 	
 }
+void handleEffects()
+{
+	
+	
+
+}
+

@@ -1,7 +1,11 @@
 #include "DACcontroller.h"
 #include "stm32l4xx.h"
 
-
+void writeDAC()
+{
+	
+		
+}
 
 void DAC_initialize(void) {
 	RCC->APB1ENR1 |= RCC_APB1ENR1_DAC1EN;

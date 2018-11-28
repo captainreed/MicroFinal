@@ -3,5 +3,6 @@
 
 
 void DAC_initialize(void);
+void writeDAC();
 	
 #endif

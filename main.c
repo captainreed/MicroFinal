@@ -3,8 +3,34 @@
 #include "EffectsController.h"
 #include "DACcontroller.h"
 #include "stm32l4xx.h"
+#include "systemInit.h"
+#include <stdbool.h>
+
+bool playBackEnabled = false;
+
+void EXTI2_IRQHandler(void) {
+
+}
+void EXTI1_IRQHandler(void) {
+
+}
+void EXTI0_IRQHandler(void) {
+
+}
+
+void SysTick_Handler(void)  {                              
+readADC();
+	if(playBackEnabled)
+	{
+	handleEffects();
+	writeDAC();	
+	writeLED();	
+	}
+}
 
 int main(void){
+configureInterrupts();
+SysTick_Initialize();
 initADC();
 DAC_initialize();
 initEffects();
