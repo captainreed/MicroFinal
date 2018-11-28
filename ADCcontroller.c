@@ -15,7 +15,10 @@ void initADC()//initialize the ADC
 	ADC1->CFGR &= (0xFFFFFFC7);	//step 9 and 10
 	ADC1->SQR1 &=(0xFFFFFFF0); //step 11
 	ADC1->SQR1 |=(0x180); //step 12
-	
+	ADC1->DIFSEL &= (0xFFFFFFBF);	//step 13
+	ADC1->SMPR1 &= (0xFFE3FFFF);	//step 14
+	ADC1->SMPR1 |= (0x80000);	//step 14
+	ADC1->CFGR &= (0xFFFFD000);	//step 15
 }
 
 void readADC()
