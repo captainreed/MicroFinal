@@ -25,7 +25,10 @@ void initADC()//initialize the ADC
 	ADC1->DIFSEL &= (0xFFFFFFBF);	//step 13
 	ADC1->SMPR1 &= (0xFFE3FFFF);	//step 14
 	ADC1->SMPR1 |= (0x80000);	//step 14
-	ADC1->CFGR &= (0xFFFFD000);	//step 15
+	ADC1->CFGR &= (0xFFFFDFFF);	//step 15
+	ADC1->CFGR &= (0xFFFFF3FF); //step 16
+	ADC1->CR |= (0x00000001); //step 17
+	while((ADC1->CR&0x00000001)!=0x00000001);	
 }
 
 void readADC()
