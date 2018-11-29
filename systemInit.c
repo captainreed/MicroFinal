@@ -1,5 +1,10 @@
+#include "ADCcontroller.h"
+#include "LEDController.h"
+#include "EffectsController.h"
+#include "DACcontroller.h"
 #include "stm32l4xx.h"
 #include "systemInit.h"
+#include <stdbool.h>
 
 void configureInterrupts()
 {
@@ -16,6 +21,7 @@ RCC->AHB2ENR |=RCC_AHB2ENR_GPIOAEN;     //enables GPIO_A clock
 	SYSCFG->EXTICR[0] &= (0xFFFFF000);      //ties interrupts to GPIO A
 	EXTI->RTSR1 |= (0x00000007);    //enables rising trigger selection for interrupt 0, 1, and 2
 	EXTI->IMR1 |= (0x00000007);     //enables interrupt mask register for interrupt 0, 1, and 2
+		
 }
 
 void sysTick_Initialize() {
