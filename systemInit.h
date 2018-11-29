@@ -2,6 +2,6 @@
 #define SYSTEMINIT_H
 
 void configureInterrupts();
-void SysTick_Initialize();
+void sysTick_Initialize();
 	
 #endif

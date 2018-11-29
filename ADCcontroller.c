@@ -1,6 +1,8 @@
 #include "ADCcontroller.h"
 #include "stm32l4xx.h"
 
+
+
 void initADC()//initialize the ADC
 {
 	RCC->AHB2ENR |= RCC_AHB2ENR_ADCEN;	//step 1

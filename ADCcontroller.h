@@ -3,9 +3,10 @@
 
 
 void initADC(void);
-void sysTick_Initialize(int ticks);
 void ADC1_Wakeup(void);
 void readADC();
 void SysTick_Initialize();
+
+//uint16_t loopArray[7500];
 	
 #endif

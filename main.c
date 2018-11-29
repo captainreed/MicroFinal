@@ -32,7 +32,7 @@ readADC();
 
 int main(void){
 configureInterrupts();
-SysTick_Initialize();
+sysTick_Initialize();
 initADC();
 DAC_initialize();
 initEffects();
