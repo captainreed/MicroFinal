@@ -7,6 +7,8 @@
 #include "lcd.h"
 #include <stdbool.h>
 
+uint16_t data[7505] = {0};
+uint16_t dataIndex=0;
 
 void EXTI2_IRQHandler(void) {
 LCD_DisplayString((uint8_t*)"");
@@ -25,7 +27,8 @@ EXTI->PR1 |= EXTI_PR1_PIF0;
 }
 
 void SysTick_Handler(void)  {                              
-readADC();
+	data[dataIndex]=readADC();	//store ADC val in data
+	dataIndex++;	//increment dataIndex (post index)
 	if(playBackEnabled)
 	{
 	handleEffects();
@@ -42,6 +45,7 @@ DAC_initialize();
 initEffects();
 initLED();
 LCD_Initialization();
+SysTick->CTRL |= 1; //enable sysTick
 	
 while(1)
 {}
