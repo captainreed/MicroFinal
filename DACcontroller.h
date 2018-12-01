@@ -3,6 +3,6 @@
 
 
 void DAC_initialize(void);
-void writeDAC();
+void writeDAC(uint16_t val);
 	
 #endif

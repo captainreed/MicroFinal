@@ -6,10 +6,9 @@
 #include "systemInit.h"
 #include <stdbool.h>
 
-void writeDAC()
+void writeDAC(uint16_t val)
 {
-	
-		
+//this is where we will write to the dac		
 }
 
 void DAC_initialize(void) {

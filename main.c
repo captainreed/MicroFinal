@@ -7,37 +7,62 @@
 #include "lcd.h"
 #include <stdbool.h>
 
-uint16_t data[7505] = {0};
-uint16_t dataIndex=0;
+#define samplesPerLoop 7505
 
-void EXTI2_IRQHandler(void) {
-LCD_DisplayString((uint8_t*)"");
-LCD_DisplayString((uint8_t*)"three");
-EXTI->PR1 |= EXTI_PR1_PIF2;
-}
+uint16_t data[samplesPerLoop] = {0};
+uint16_t dataIndex=0;
+extern bool playBackEnabled;
+bool recording = false;
+
+//left most button
 void EXTI1_IRQHandler(void) {
-LCD_DisplayString((uint8_t*)"");
-LCD_DisplayString((uint8_t*)"one");
+LCD_DisplayString((uint8_t*)"      ");
+LCD_DisplayString((uint8_t*)"record");	
+if(recording){
+	recording = false;
+}
+else{
+	recording = true;
+}
 EXTI->PR1 |= EXTI_PR1_PIF1;
 }
+//middle button
 void EXTI0_IRQHandler(void) {
-LCD_DisplayString((uint8_t*)"");
-LCD_DisplayString((uint8_t*)"two");
+LCD_DisplayString((uint8_t*)"      ");
+LCD_DisplayString((uint8_t*)"loop");
+if(playBackEnabled){
+	playBackEnabled = false;
+}
+else{
+	playBackEnabled = true;
+}
 EXTI->PR1 |= EXTI_PR1_PIF0;
+}
+//right most button
+void EXTI2_IRQHandler(void) {
+LCD_DisplayString((uint8_t*)"      ");
+LCD_DisplayString((uint8_t*)"OD");//OverDrive
+EXTI->PR1 |= EXTI_PR1_PIF2;
 }
 
 void SysTick_Handler(void)  {                              
 	data[dataIndex]=readADC();	//store ADC val in data
-	dataIndex++;	//increment dataIndex (post index)
 	if(playBackEnabled)
 	{
 	handleEffects();
-	writeDAC();	
+	writeDAC(data[dataIndex]);	
 	writeLED();	
+	}
+	
+	dataIndex++;	//increment dataIndex (post index)
+	if(dataIndex >= samplesPerLoop)
+	{
+		dataIndex = 0;
 	}
 }
 
 int main(void){
+playBackEnabled = false;
 configureInterrupts();
 sysTick_Initialize();
 initADC();
