@@ -8,7 +8,11 @@
 
 void writeDAC(uint16_t val)
 {
-//this is where we will write to the dac		
+//this is where we will write to the dac
+	while((DAC->SR & DAC_SR_BWST2) !=0);
+	DAC->DHR12R2 = val;  //write data to DAC output
+	DAC->SWTRIGR |= DAC_SWTRIGR_SWTRIG2;    //triggers DAC output
+	for(int i =0; i <=10; i++);     //small delay
 }
 
 void DAC_initialize(void) {
