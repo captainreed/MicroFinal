@@ -29,13 +29,9 @@ void initADC()//initialize the ADC
 	while((ADC1->CR&0x00000001)!=0x00000001);	
 }
 
-uint16_t readADC()
+void readADC()
 {
 	ADC1->CR |= (0x00000004);
-	while((ADC1->ISR&0x00000004)!=0x00000004);
-	ADC1->ISR &= (0xFFFFFFFB);
-	uint16_t ret=((ADC1->DR)&(0x0000FFFF));
-	return ret;
 }
 
 void ADC1_Wakeup(void) {
