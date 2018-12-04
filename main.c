@@ -46,19 +46,15 @@ EXTI->PR1 |= EXTI_PR1_PIF2;
 }
 
 void SysTick_Handler(void)  {                              
-	data[dataIndex]=readADC();	//store ADC val in data
+	readADC();	//store ADC val in data
 	if(playBackEnabled)
 	{
 	handleEffects();
 	writeDAC(data[dataIndex]);	
 	writeLED();	
 	}
-	
 	dataIndex++;	//increment dataIndex (post index)
-	if(dataIndex >= samplesPerLoop)
-	{
-		dataIndex = 0;
-	}
+	dataIndex=dataIndex%samplesPerLoop;
 }
 
 int main(void){
