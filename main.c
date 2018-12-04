@@ -53,6 +53,10 @@ void SysTick_Handler(void)  {
 	writeDAC(data[dataIndex]);	
 	writeLED();	
 	}
+}
+
+void ADC1_2_IRQHandler(void) {
+	data[dataIndex]=((ADC1->DR)&(0x0000FFFF));
 	dataIndex++;	//increment dataIndex (post index)
 	dataIndex=dataIndex%samplesPerLoop;
 }
