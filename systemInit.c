@@ -17,14 +17,14 @@ RCC->AHB2ENR |=RCC_AHB2ENR_GPIOAEN;     //enables GPIO_A clock
 	NVIC_EnableIRQ(EXTI2_IRQn);     //enables EXTI2 interrupt
 	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;   //enables SYSCFG
 	SYSCFG->EXTICR[0] &= (0xFFFF00F0);      //ties interrupts to GPIO A
-	EXTI->RTSR1 |= (0x0000000B);    //enables rising trigger selection for interrupt 0, 3, and 2
-	EXTI->IMR1 |= (0x0000000B);     //enables interrupt mask register for interrupt 0, 3, and 2
+	EXTI->RTSR1 |= (0x0000000B);    //enables rising trigger selection for interrupt 0, 1, and 2
+	EXTI->IMR1 |= (0x0000000B);     //enables interrupt mask register for interrupt 0, 1, and 2
 		
 }
 
 void sysTick_Initialize() {
 SysTick->CTRL = 0;
-SysTick->LOAD = 8000-1;//set the systick to go off every 2 ms
+SysTick->LOAD = 1000-1;//set the systick to go off every 2 ms
 NVIC_SetPriority(SysTick_IRQn, (1<<__NVIC_PRIO_BITS)-1);
 SysTick->VAL=0;
 SysTick->CTRL |= SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_TICKINT_Msk;
