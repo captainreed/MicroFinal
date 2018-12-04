@@ -8,6 +8,11 @@
 
 void initADC()//initialize the ADC
 {
+	RCC->CR |= RCC_CR_HSION;    //turns HSI16 on
+	while((RCC->CR & RCC_CR_HSIRDY) == 0);  //waits till HSI16 is ready
+	GPIOA->MODER |= (0xC); //sets PA.1 to analog mode
+	GPIOA->PUPDR |= (0x8);	//sets pull-down resistor for PA.1
+	GPIOA->ASCR |= (0x2); //conects PA.1 to ADC
 	RCC->AHB2ENR |= RCC_AHB2ENR_ADCEN;	//step 1
 	ADC1->CR &=(0xE);	//step 2
 	SYSCFG->CFGR1 |= SYSCFG_CFGR1_BOOSTEN;	//step 3
@@ -25,6 +30,8 @@ void initADC()//initialize the ADC
 	ADC1->SMPR1 |= (0x80000);	//step 14
 	ADC1->CFGR &= (0xFFFFDFFF);	//step 15
 	ADC1->CFGR &= (0xFFFFF3FF); //step 16
+	ADC1->IER |= (0x4); //enables EOC interrupt
+	NVIC_EnableIRQ(ADC1_2_IRQn);     //enables EXTI2 interrupt
 	ADC1->CR |= (0x00000001); //step 17
 	while((ADC1->CR&0x00000001)!=0x00000001);	
 }
