@@ -96,7 +96,7 @@ uint8_t t_bar[2] = {0x00,0x00};
 /* code for 'n' character */
 #define C_NMAP                ((uint16_t) 0x2210)
 
-/* code for 'µ' character */
+/* code for 'Âµ' character */
 #define C_UMAP                ((uint16_t) 0x6084)
 
 /* constant code for '*' character */
@@ -111,7 +111,7 @@ uint8_t t_bar[2] = {0x00,0x00};
 /* constant code for '/' */
 #define C_SLATCH              ((uint16_t) 0x00c0)
 
-/* constant code for ° */
+/* constant code for Â° */
 #define C_PERCENT_1           ((uint16_t) 0xec00)
 
 /* constant code for small o */
@@ -345,7 +345,56 @@ void LCD_Configure(void)
 
 
 void LCD_Clear(void){
- 
+ //clears first digit
+    while ((LCD->SR & LCD_SR_UDR) != 0);    //wait for LCD to be ready
+      LCD->RAM[0] &= ~( 1U << 4 | 1U << 23 | 1U << 22 | 1U << 3 );  //loads clear value with following lines
+      LCD->RAM[2] &= ~( 1U << 4 | 1U << 23 | 1U << 22 | 1U << 3 );
+      LCD->RAM[4] &= ~( 1U << 4 | 1U << 23 | 1U << 22 | 1U << 3 );
+      LCD->RAM[6] &= ~( 1U << 4 | 1U << 23 | 1U << 22 | 1U << 3 );
+    LCD->SR |= LCD_SR_UDR;  //write the data to the LCD
+//clears second digit
+	while ((LCD->SR & LCD_SR_UDR) != 0);    //wait for LCD to be ready
+      LCD->RAM[0] &= ~( 1U << 6 | 1U << 13 | 1U << 12 | 1U << 5 );  //loads clear value with following lines
+      LCD->RAM[2] &= ~( 1U << 6 | 1U << 13 | 1U << 12 | 1U << 5 );
+      LCD->RAM[4] &= ~( 1U << 6 | 1U << 13 | 1U << 12 | 1U << 5 );
+      LCD->RAM[6] &= ~( 1U << 6 | 1U << 13 | 1U << 12 | 1U << 5 );
+	LCD->SR |= LCD_SR_UDR;  //write the data to the LCD
+//clears third digit
+	while ((LCD->SR & LCD_SR_UDR) != 0);    //wait for LCD to be ready
+      LCD->RAM[0] &= ~( 1U << 15 | 1U << 29 | 1U << 28 | 1U << 14 );    //loads clear value with following lines
+      LCD->RAM[2] &= ~( 1U << 15 | 1U << 29 | 1U << 28 | 1U << 14 );
+      LCD->RAM[4] &= ~( 1U << 15 | 1U << 29 | 1U << 28 | 1U << 14 );
+      LCD->RAM[6] &= ~( 1U << 15 | 1U << 29 | 1U << 28 | 1U << 14 );
+	LCD->SR |= LCD_SR_UDR;
+//clears fourth digit
+	while ((LCD->SR & LCD_SR_UDR) != 0);    //wait for LCD to be ready
+      LCD->RAM[0] &= ~( 1U << 31 | 1U << 30);   //loads clear value with following lines
+      LCD->RAM[1] &= ~( 1U << 1 | 1U << 0 );
+      LCD->RAM[2] &= ~( 1U << 31 | 1U << 30);
+      LCD->RAM[3] &= ~( 1U << 1 | 1U << 0 );
+      LCD->RAM[4] &= ~( 1U << 31 | 1U << 30);
+      LCD->RAM[5] &= ~( 1U << 1 | 1U << 0 );
+      LCD->RAM[6] &= ~( 1U << 31 | 1U << 30);
+      LCD->RAM[7] &= ~( 1U << 1 | 1U << 0 );
+	LCD->SR |= LCD_SR_UDR;  //write the data to the LCD
+//clears fifth digit
+	while ((LCD->SR & LCD_SR_UDR) != 0);    //wait for LCD to be ready
+      LCD->RAM[0] &= ~( 1U << 25 | 1U << 24);   //loads clear value with following lines
+      LCD->RAM[1] &= ~( 1U << 3 | 1U << 2 );
+      LCD->RAM[2] &= ~( 1U << 25 | 1U << 24);
+      LCD->RAM[3] &= ~( 1U << 3 | 1U << 2 );
+      LCD->RAM[4] &= ~( 1U << 25 | 1U << 24 );
+      LCD->RAM[5] &= ~( 1U << 3 | 1U << 2 );
+      LCD->RAM[6] &= ~( 1U << 25 | 1U << 24 );
+      LCD->RAM[7] &= ~( 1U << 3 | 1U << 2 );
+	LCD->SR |= LCD_SR_UDR;  //write the data to the LCD
+//clears sixth digit
+	while ((LCD->SR & LCD_SR_UDR) != 0);    //wait for LCD to be ready
+      LCD->RAM[0] &= ~( 1U << 17 | 1U << 8 | 1U << 9 | 1U << 26 );  //loads clear value with following lines
+      LCD->RAM[2] &= ~( 1U << 17 | 1U << 8 | 1U << 9 | 1U << 26 );
+      LCD->RAM[4] &= ~( 1U << 17 | 1U << 8 | 1U << 9 | 1U << 26 );
+      LCD->RAM[6] &= ~( 1U << 17 | 1U << 8 | 1U << 9 | 1U << 26 );
+	LCD->SR |= LCD_SR_UDR;  //write the data to the LCD
 }
 
 
@@ -438,7 +487,7 @@ static void LCD_Conv_Char_Seg(uint8_t* c, bool point, bool colon, uint8_t* digit
       ch = C_NMAP;
       break;
 
-    case 'µ' :
+    case 'Âµ' :
       ch = C_UMAP;
       break;
 
@@ -454,7 +503,7 @@ static void LCD_Conv_Char_Seg(uint8_t* c, bool point, bool colon, uint8_t* digit
       ch = C_SLATCH;
       break;  
       
-    case '°' :
+    case 'Â°' :
       ch = C_PERCENT_1;
       break;  
 		
