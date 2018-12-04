@@ -5,7 +5,7 @@
 extern uint16_t loopArray[7500];
 void initADC(void);
 void ADC1_Wakeup(void);
-uint16_t readADC();
+void readADC();
 void SysTick_Initialize();
 
 	
