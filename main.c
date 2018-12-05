@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define samplesPerLoop 960000
+#define samplesPerLoop 48000
 
 uint16_t data[samplesPerLoop] = {0};
 bool loop_playing = false;
@@ -31,13 +31,13 @@ void EXTI3_IRQHandler(void) {
 if(loop_recording){
 	loop_recording = false;
 	LCD_Clear();
-	LCD_DisplayString((uint8_t*)"record");
+	LCD_DisplayString((uint8_t*)"rec0");
 }
 else{
 	//record_pending = true;
 	loop_recording = true;
 	LCD_Clear();
-	LCD_DisplayString((uint8_t*)"rec 1");
+	LCD_DisplayString((uint8_t*)"rec1");
 }
 EXTI->PR1 |= EXTI_PR1_PIF3;
 }
@@ -59,13 +59,13 @@ EXTI->PR1 |= EXTI_PR1_PIF0;
 void EXTI2_IRQHandler(void) {	
 if(overdrive_active){
 overdrive_active = false;
-LCD_DisplayString((uint8_t*)"      ");
-LCD_DisplayString((uint8_t*)"OD 0");//OverDrive
+LCD_Clear();
+LCD_DisplayString((uint8_t*)"OD0");//OverDrive
 }
 else{
 overdrive_active = true;
-LCD_DisplayString((uint8_t*)"      ");
-LCD_DisplayString((uint8_t*)"OD 1");//OverDrive
+LCD_Clear();
+LCD_DisplayString((uint8_t*)"OD1");//OverDrive
 }
 EXTI->PR1 |= EXTI_PR1_PIF2;
 }
