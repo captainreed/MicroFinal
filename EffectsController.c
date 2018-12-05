@@ -6,19 +6,14 @@
 #include "systemInit.h"
 #include <stdbool.h>
 
-extern uint16_t loopArray[7500];
-
-bool playBackEnabled;
-
 void initEffects()//initialize the ADC
 {
-playBackEnabled = false;
-	
+
 }
-void handleEffects()
+
+void handleEffects(uint16_t *data_array, bool overdrive_status, bool delay_status, int rec_index, int play_index)
 {
 	
 	
 
 }
-

@@ -3,8 +3,6 @@
 #include <stdbool.h>
 
 void initEffects();
-void handleEffects();
-void configureInterrupts();
+void handleEffects(uint16_t *data_array, bool overdrive_status, bool delay_status, int rec_index, int play_index);
 	
-extern bool playBackEnabled;
 #endif

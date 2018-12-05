@@ -10,59 +10,81 @@
 #define samplesPerLoop 7505
 
 uint16_t data[samplesPerLoop] = {0};
-uint16_t dataIndex=0;
-extern bool playBackEnabled;
-bool recording = false;
+bool loop_playing = false;
+bool loop_recording = false;
+bool overdrive_active = false;
+bool delay_active = false;
+int recording_index = 0;
+int playback_index = 0;
 
 //left most button
-void EXTI1_IRQHandler(void) {
-LCD_DisplayString((uint8_t*)"      ");
-LCD_DisplayString((uint8_t*)"record");	
-if(recording){
-	recording = false;
+void EXTI3_IRQHandler(void) {
+if(loop_recording){
+	loop_recording = false;
+	LCD_DisplayString((uint8_t*)"      ");
+	LCD_DisplayString((uint8_t*)"rec 0");
 }
 else{
-	recording = true;
+	loop_recording = true;
+	LCD_DisplayString((uint8_t*)"      ");
+	LCD_DisplayString((uint8_t*)"rec 1");
 }
 EXTI->PR1 |= EXTI_PR1_PIF1;
 }
-//middle button
+//center button
 void EXTI0_IRQHandler(void) {
-LCD_DisplayString((uint8_t*)"      ");
-LCD_DisplayString((uint8_t*)"loop");
-if(playBackEnabled){
-	playBackEnabled = false;
+if(loop_playing){
+	loop_playing = false;
+	LCD_DisplayString((uint8_t*)"      ");
+	LCD_DisplayString((uint8_t*)"loop0");
 }
 else{
-	playBackEnabled = true;
+	loop_playing = true;
+	LCD_DisplayString((uint8_t*)"      ");
+	LCD_DisplayString((uint8_t*)"loop1");
 }
 EXTI->PR1 |= EXTI_PR1_PIF0;
 }
 //right most button
-void EXTI2_IRQHandler(void) {
+void EXTI2_IRQHandler(void) {	
+if(overdrive_active){
+overdrive_active = false;
 LCD_DisplayString((uint8_t*)"      ");
-LCD_DisplayString((uint8_t*)"OD");//OverDrive
+LCD_DisplayString((uint8_t*)"OD 0");//OverDrive
+}
+else{
+overdrive_active = true;
+LCD_DisplayString((uint8_t*)"      ");
+LCD_DisplayString((uint8_t*)"OD 1");//OverDrive
+}
+	
 EXTI->PR1 |= EXTI_PR1_PIF2;
 }
 
 void SysTick_Handler(void)  {                              
-	readADC();	//store ADC val in data
-	if(playBackEnabled)
+	if(loop_recording)
 	{
-	handleEffects();
-	writeDAC(data[dataIndex]);	
+	readADC();	//store ADC val in data
+	if(loop_playing){playback_index = recording_index;}
+	if(recording_index == samplesPerLoop){loop_recording = false;}
+	}
+	if(loop_playing)
+	{
+	handleEffects(data, overdrive_active, delay_active, recording_index, playback_index);
+	writeDAC(data[playback_index]);	
 	writeLED();	
+	playback_index++;
+	playback_index = playback_index%samplesPerLoop;
 	}
 }
 
 void ADC1_2_IRQHandler(void) {
-	data[dataIndex]=((ADC1->DR)&(0x0000FFFF));
-	dataIndex++;	//increment dataIndex (post index)
-	dataIndex=dataIndex%samplesPerLoop;
+	data[recording_index]=((ADC1->DR)&(0x0000FFFF));
+	recording_index++;	//increment dataIndex (post index)
+	recording_index=recording_index%samplesPerLoop;
 }
 
 int main(void){
-playBackEnabled = false;
 configureInterrupts();
 sysTick_Initialize();
 initADC();
@@ -71,8 +93,6 @@ initEffects();
 initLED();
 LCD_Initialization();
 SysTick->CTRL |= 1; //enable sysTick
-	
 while(1)
 {}
-
 }
