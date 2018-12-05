@@ -17,8 +17,8 @@ RCC->AHB2ENR |=RCC_AHB2ENR_GPIOAEN;     //enables GPIO_A clock
 	NVIC_EnableIRQ(EXTI2_IRQn);     //enables EXTI2 interrupt
 	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;   //enables SYSCFG
 	SYSCFG->EXTICR[0] &= (0xFFFF00F0);      //ties interrupts to GPIO A
-	EXTI->RTSR1 |= (0x0000000B);    //enables rising trigger selection for interrupt 0, 1, and 2
-	EXTI->IMR1 |= (0x0000000B);     //enables interrupt mask register for interrupt 0, 1, and 2
+	EXTI->RTSR1 |= (0x0000000D);    //enables rising trigger selection for interrupt 0, 1, and 2
+	EXTI->IMR1 |= (0x0000000D);     //enables interrupt mask register for interrupt 0, 1, and 2
 		
 }
 
