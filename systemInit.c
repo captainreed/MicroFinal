@@ -11,7 +11,7 @@ void configureInterrupts()
 RCC->AHB2ENR |=RCC_AHB2ENR_GPIOAEN;     //enables GPIO_A clock
 	GPIOA->MODER &=(0xFFFFFF0C);    //sets GPIO A pins 0, 2, and 3 for input mode
 	GPIOA->PUPDR &=(0xFFFFFF0C);    //sets GPIO A pins 0, 2, and 3 to pull-down mode
-  GPIOA->PUPDR |=(0x00000051);
+  GPIOA->PUPDR |=(0x000000A2);
 	NVIC_EnableIRQ(EXTI0_IRQn);     //enables EXTI0 interrupt
 	NVIC_EnableIRQ(EXTI3_IRQn);     //enables EXTI3 interrupt
 	NVIC_EnableIRQ(EXTI2_IRQn);     //enables EXTI2 interrupt
