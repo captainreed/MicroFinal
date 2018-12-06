@@ -85,33 +85,34 @@ void SysTick_Handler(void)  {
 //loop_recording = false;
 //record_pending = false;
 //}
-if(loop_recording)
-{
-readADC();	//store ADC val in data
-if(loop_playing){playback_index = recording_index;}
-	if(recording_index == samplesPerLoop){
-	loop_recording = false; 
-	loop_playing=true;
-	LCD_Clear();
-	LCD_DisplayString((uint8_t*)"loop1");
-	}
-	if(loop_playing)
+	if(loop_recording)
 	{
-	handleEffects(data, overdrive_active, delay_active, recording_index, playback_index);
-	if(dummy<1000) {
-		averageLED+=data[playback_index];
+		readADC();	//store ADC val in data
+		if(loop_playing){playback_index = recording_index;}
 		
-	} else {
-		averageLED/=1000;
-		writeLED(averageLED);
-	}
-	dummy++;
-	writeDAC(data[playback_index]);	
-	playback_index++;
-	playback_index = playback_index%samplesPerLoop;
+		if(recording_index == samplesPerLoop-1){
+		loop_recording = false; 
+		loop_playing=true;
+		LCD_Clear();
+		LCD_DisplayString((uint8_t*)"loop1");
+		}
+		if(loop_playing)
+		{
+		handleEffects(data, overdrive_active, delay_active, recording_index, playback_index);
+		if(dummy<1000) {
+			averageLED+=data[playback_index];
+			
+		} else {
+			averageLED/=1000;
+			writeLED(averageLED);
+		}
+		dummy++;
+		writeDAC(data[playback_index]);	
+		playback_index++;
+		playback_index = playback_index%samplesPerLoop;
+		}
 	}
 }
-
 
 void ADC1_2_IRQHandler(void) {
 	if(loop_playing){
