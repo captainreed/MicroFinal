@@ -99,12 +99,13 @@ void SysTick_Handler(void)  {
 		if(loop_playing)
 		{
 		handleEffects(data, overdrive_active, delay_active, recording_index, playback_index);
-		if(dummy<1000) {
+		if(dummy<100) {
 			averageLED+=data[playback_index];
-			
 		} else {
-			averageLED/=1000;
+			averageLED/=100;
+			dummy=0;
 			writeLED(averageLED);
+			averageLED=0;
 		}
 		dummy++;
 		writeDAC(data[playback_index]);	
