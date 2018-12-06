@@ -21,12 +21,12 @@ void writeLED(uint16_t data)
 	GPIOE->ODR &= (0xFFFFDFFF);	//disables PE13
 	GPIOE->ODR &= (0xFFFFBFFF);	//disables PE14
 	GPIOE->ODR &= (0xFFFF7FFF);	//disables PE15
-	if(data<= (0x3FF)) {	//lower
+	if(data<= (0x720)) {	//lower
 		GPIOE->ODR |= (0x1000);	//enables PE12 
-	} else if(data<= (0x7EE)) {
+	} else if(data<= (0x735)) {
 		GPIOE->ODR |= (0x1000);	//enables PE12 
 		GPIOE->ODR |= (0x2000);	//enables PE13 
-	} else if(data<= (0xBFD)) {
+	} else if(data<= (0x750)) {
 		GPIOE->ODR |= (0x1000);	//enables PE12 
 		GPIOE->ODR |= (0x2000);	//enables PE13 
 		GPIOE->ODR |= (0x4000);	//enables PE14
@@ -35,5 +35,5 @@ void writeLED(uint16_t data)
 		GPIOE->ODR |= (0x2000);	//enables PE13 
 		GPIOE->ODR |= (0x4000);	//enables PE14
 		GPIOE->ODR |= (0x8000);	//enables PE15
-	}	
+	}		
 }
