@@ -26,7 +26,7 @@ char timeNumberChar[2];
 
 int display_time = 0;
 
-//left most button
+//top button
 void EXTI3_IRQHandler(void) {
 if(loop_recording){
 	loop_recording = false;
@@ -71,28 +71,37 @@ EXTI->PR1 |= EXTI_PR1_PIF2;
 }
 
 void SysTick_Handler(void)  {
-if(playback_index%64000 == 0){
-//sprintf(timeNumberChar, "%d", display_time);
-}
-if(record_pending && loop_playing && playback_index ==0)
+//if(playback_index%4000 == 0){
+////sprintf(timeNumberChar, "%d", display_time);
+//}
+//if(record_pending && playback_index ==0)
+//{
+//loop_recording = true;
+//record_pending = false;
+//}	
+//if(loop_recording && recording_index == 0){
+//loop_recording = false;
+//record_pending = false;
+//}
+if(loop_recording)
 {
-loop_recording = true;
-record_pending = false;
-}	
-	if(loop_recording)
-	{
-	readADC();	//store ADC val in data
-	if(loop_playing){playback_index = recording_index;}
-	if(recording_index == samplesPerLoop){loop_recording = false; loop_playing=true;}
+readADC();	//store ADC val in data
+if(loop_playing){playback_index = recording_index;}
+	if(recording_index == samplesPerLoop){
+	loop_recording = false; 
+	loop_playing=true;
+	LCD_Clear();
+	LCD_DisplayString((uint8_t*)"loop1");
 	}
-	if(loop_playing)
-	{
-	handleEffects(data, overdrive_active, delay_active, recording_index, playback_index);
-	writeDAC(data[playback_index]);	
-	writeLED();	
-	playback_index++;
-	playback_index = playback_index%samplesPerLoop;
-	}
+}
+if(loop_playing)
+{
+handleEffects(data, overdrive_active, delay_active, recording_index, playback_index);
+writeDAC(data[playback_index]);	
+writeLED();	
+playback_index++;
+playback_index = playback_index%samplesPerLoop;
+}
 }
 
 void ADC1_2_IRQHandler(void) {
