@@ -20,6 +20,8 @@ bool delay_active = false;
 bool record_pending = false;
 int recording_index = 0;
 int playback_index = 0;
+uint16_t dummy=0;
+uint32_t averageLED=0;
 
 char operationString[6];
 char timeNumberChar[2];
@@ -88,8 +90,15 @@ record_pending = false;
 	if(loop_playing)
 	{
 	handleEffects(data, overdrive_active, delay_active, recording_index, playback_index);
+	if(dummy<1000) {
+		averageLED+=data[playback_index];
+		
+	} else {
+		averageLED/=1000;
+		writeLED(averageLED);
+	}
+	dummy++;
 	writeDAC(data[playback_index]);	
-	writeLED();	
 	playback_index++;
 	playback_index = playback_index%samplesPerLoop;
 	}
@@ -114,7 +123,47 @@ DAC_initialize();
 initEffects();
 initLED();
 LCD_Initialization();
-SysTick->CTRL |= 1; //enable sysTick
+	int a=0;
+GPIOE->ODR |= (0x1000);	//enables PE12 
+	for(int i=0; i<15000; i++) {
+		a++;
+	}
+	a=0;
+	GPIOE->ODR |= (0x2000);	//enables PE13 
+	for(int i=0; i<15000; i++) {
+		a++;
+	}
+	a=0;
+		GPIOE->ODR |= (0x4000);	//enables PE14
+	for(int i=0; i<15000; i++) {
+		a++;
+	}
+	a=0;
+		GPIOE->ODR |= (0x8000);	//enables PE15
+	for(int i=0; i<15000; i++) {
+		a++;
+	}
+		a=0;
+		GPIOE->ODR &= (0xFFFFEFFF);	//disables PE12
+	for(int i=0; i<15000; i++) {
+		a++;
+	}
+	a=0;
+		GPIOE->ODR &= (0xFFFFDFFF);	//disables PE13
+	for(int i=0; i<15000; i++) {
+		a++;
+	}
+	a=0;
+		GPIOE->ODR &= (0xFFFFBFFF);	//disables PE14
+	for(int i=0; i<15000; i++) {
+		a++;
+	}
+	a=0;
+		GPIOE->ODR &= (0xFFFF7FFF);	//disables PE15
+	for(int i=0; i<15000; i++) {
+		a++;
+	}
+	SysTick->CTRL |= 1; //enable sysTick
 while(1)
 {}
 }
