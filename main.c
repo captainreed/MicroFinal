@@ -11,6 +11,7 @@
 #include <string.h>
 
 #define samplesPerLoop 48000
+#define ODCutOffValue 0x0750
 
 uint16_t data[samplesPerLoop] = {0};
 bool loop_playing = false;
@@ -96,9 +97,14 @@ void SysTick_Handler(void)  {
 		LCD_Clear();
 		LCD_DisplayString((uint8_t*)"loop1");
 		}
+	}
 		if(loop_playing)
 		{
 		handleEffects(data, overdrive_active, delay_active, recording_index, playback_index);
+		if(overdrive_active)
+		{
+			if(data[playback_index] > ODCutOffValue){data[playback_index] = ODCutOffValue;}
+		}
 		if(dummy<1000) {
 			averageLED+=data[playback_index];
 			
@@ -110,7 +116,6 @@ void SysTick_Handler(void)  {
 		writeDAC(data[playback_index]);	
 		playback_index++;
 		playback_index = playback_index%samplesPerLoop;
-		}
 	}
 }
 
