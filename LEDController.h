@@ -2,6 +2,6 @@
 #define LEDCONTROLLER_H
 
 void initLED();
-void writeLED();
+void writeLED(uint16_t data);
 	
 #endif
