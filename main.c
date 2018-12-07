@@ -12,6 +12,7 @@
 
 #define samplesPerLoop 48000
 #define ODCutOffValue 0x0750
+#define debounceVal 20000
 
 uint16_t data[samplesPerLoop] = {0};
 bool loop_playing = false;
@@ -21,8 +22,13 @@ bool delay_active = false;
 bool record_pending = false;
 int recording_index = 0;
 int playback_index = 0;
-uint16_t dummy=0;
-uint32_t averageLED=0;
+uint16_t LEDcode=0;
+uint16_t buffer=0;
+void debounce(int duration) {
+	for(int i=0; i<duration; i++) {
+		(void)0;
+	}
+}
 
 char operationString[6];
 char timeNumberChar[2];
@@ -31,6 +37,7 @@ int display_time = 0;
 
 //top button
 void EXTI3_IRQHandler(void) {
+		debounce(debounceVal);
 if(loop_recording){
 	loop_recording = false;
 	LCD_Clear();
@@ -46,6 +53,7 @@ EXTI->PR1 |= EXTI_PR1_PIF3;
 }
 //center button
 void EXTI0_IRQHandler(void) {
+	debounce(debounceVal);
 if(loop_playing){
 	loop_playing = false;
 	LCD_Clear();
@@ -60,6 +68,7 @@ EXTI->PR1 |= EXTI_PR1_PIF0;
 }
 //right most button
 void EXTI2_IRQHandler(void) {	
+		debounce(debounceVal);
 if(overdrive_active){
 overdrive_active = false;
 LCD_Clear();
@@ -97,19 +106,48 @@ void SysTick_Handler(void)  {
 		LCD_Clear();
 		LCD_DisplayString((uint8_t*)"loop1");
 		}
+		if(buffer >= 100) {
+			buffer=0;
+			LEDcode=(LEDcode+7)%8;
+			writeLED(LEDcode);
+		}
+		buffer++;
 	}
-		if(loop_playing)
-		{
+	if(loop_playing)
+	{
 		if(overdrive_active)
 		{
-		if(data[playback_index] > ODCutOffValue){writeDAC(ODCutOffValue);}
+			if(data[playback_index] > ODCutOffValue){
+				writeDAC(ODCutOffValue);
+			}
+			if(loop_recording) {
+			//do nothing
 		} else {
-		writeDAC(data[playback_index]);
+			if(buffer >= 50) {
+				buffer=0;
+				LEDcode=(LEDcode+1)%8;
+				writeLED(LEDcode);
+			}
+			buffer++;
+		}
+		} else {
+			writeDAC(data[playback_index]);
+		if(loop_recording) {
+			//do nothing
+		} else {
+			if(buffer >= 200) {
+				buffer=0;
+				LEDcode=(LEDcode+1)%8;
+				writeLED(LEDcode);
+			}
+			buffer++;
+		}
 		}
 		handleEffects(data, overdrive_active, delay_active, recording_index, playback_index);
 		playback_index++;
-		playback_index = playback_index%samplesPerLoop;
+		playback_index = playback_index%samplesPerLoop;			
 	}
+		
 }
 
 void ADC1_2_IRQHandler(void) {
