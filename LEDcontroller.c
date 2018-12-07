@@ -17,23 +17,30 @@ void initLED()//initialize the LED pins
 }
 void writeLED(uint16_t data)
 {
-	GPIOE->ODR &= (0xFFFFEFFF);	//disables PE12
-	GPIOE->ODR &= (0xFFFFDFFF);	//disables PE13
-	GPIOE->ODR &= (0xFFFFBFFF);	//disables PE14
-	GPIOE->ODR &= (0xFFFF7FFF);	//disables PE15
-	if(data<= (0x720)) {	//lower
-		GPIOE->ODR |= (0x1000);	//enables PE12 
-	} else if(data<= (0x735)) {
-		GPIOE->ODR |= (0x1000);	//enables PE12 
+	if(data==0) {
+	GPIOE->ODR |= (0x1000);	//enables PE12 
+	}
+	if(data==1) {
 		GPIOE->ODR |= (0x2000);	//enables PE13 
-	} else if(data<= (0x750)) {
-		GPIOE->ODR |= (0x1000);	//enables PE12 
-		GPIOE->ODR |= (0x2000);	//enables PE13 
+	}
+	if(data==2) {
+		
 		GPIOE->ODR |= (0x4000);	//enables PE14
-	} else {
-		GPIOE->ODR |= (0x1000);	//enables PE12 
-		GPIOE->ODR |= (0x2000);	//enables PE13 
-		GPIOE->ODR |= (0x4000);	//enables PE14
+	}
+	if(data==3) {
 		GPIOE->ODR |= (0x8000);	//enables PE15
-	}		
+	}
+	if(data==7) {
+		GPIOE->ODR &= (0xFFFF7FFF);	//disables PE15
+	}
+	if(data==4) {
+		GPIOE->ODR &= (0xFFFFEFFF);	//disables PE12
+	}
+	if(data==5) {
+		GPIOE->ODR &= (0xFFFFDFFF);	//disables PE13
+	}
+	if(data==6) {
+		GPIOE->ODR &= (0xFFFFBFFF);	//disables PE14
+	}
+			
 }
