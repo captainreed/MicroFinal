@@ -102,19 +102,18 @@ void SysTick_Handler(void)  {
 		{
 		if(overdrive_active)
 		{
-			if(data[playback_index] > ODCutOffValue){data[playback_index] = ODCutOffValue;}
+		if(data[playback_index] > ODCutOffValue){writeDAC(ODCutOffValue);}
+		} else {
+		writeDAC(data[playback_index]);
 		}
 		handleEffects(data, overdrive_active, delay_active, recording_index, playback_index);
-		if(dummy<100) {
-			averageLED+=data[playback_index];
-		} else {
-			averageLED/=100;
-			dummy=0;
-			writeLED(averageLED);
-			averageLED=0;
+		if(dummy1>150) {
+			writeLED(dummy);
+			dummy1=0;
 		}
+		dummy1++;
+		dummy=(dummy+1)%8;
 		dummy++;
-		writeDAC(data[playback_index]);	
 		playback_index++;
 		playback_index = playback_index%samplesPerLoop;
 	}
