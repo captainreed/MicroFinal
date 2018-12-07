@@ -107,13 +107,6 @@ void SysTick_Handler(void)  {
 		writeDAC(data[playback_index]);
 		}
 		handleEffects(data, overdrive_active, delay_active, recording_index, playback_index);
-		if(dummy1>150) {
-			writeLED(dummy);
-			dummy1=0;
-		}
-		dummy1++;
-		dummy=(dummy+1)%8;
-		dummy++;
 		playback_index++;
 		playback_index = playback_index%samplesPerLoop;
 	}
