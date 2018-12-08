@@ -15,13 +15,13 @@ RCC->AHB2ENR |=RCC_AHB2ENR_GPIOBEN;     //enables GPIO_A clock
 	GPIOA->PUPDR &=(0xFFFFFF0C);    //sets GPIO A pins 0, 2, and 3 to pull-down mode
   GPIOA->PUPDR |=(0x000000A2);
 	
-	GPIOB->MODER &=(0xFFFF0FFF);    //sets GPIO B pins 6 and 7 for input mode
-	GPIOB->PUPDR &=(0xFFFF0FFF);    //sets GPIO B pins 6 and 7 to pull-down mode
-  GPIOB->PUPDR |=(0x0000A000);
+	GPIOB->MODER &=(0xFFFFCFFF);    //sets GPIO B pins 6 and 7 for input mode
+	GPIOB->PUPDR &=(0xFFFFCFFF);    //sets GPIO B pins 6 and 7 to pull-down mode
+  GPIOB->PUPDR |=(0x00001000);
 	
 	GPIOE->MODER &=(0xFFCFFFFF);    //sets GPIO E pin 10 for input mode
 	GPIOE->PUPDR &=(0xFFCFFFFF);    //sets GPIO E pins 10 to pull-down mode
-  GPIOE->PUPDR |=(0x00200000);
+  GPIOE->PUPDR |=(0x00100000);
 	
 	NVIC_EnableIRQ(EXTI0_IRQn);     //enables EXTI0 interrupt
 	NVIC_EnableIRQ(EXTI3_IRQn);     //enables EXTI3 interrupt
@@ -36,8 +36,9 @@ RCC->AHB2ENR |=RCC_AHB2ENR_GPIOBEN;     //enables GPIO_A clock
 	SYSCFG->EXTICR[2] |= (0x100);
 	SYSCFG->EXTICR[3] &= (0xFFFFF0FF);      //ties interrupts to GPIO E
 	SYSCFG->EXTICR[3] |= (0x00000400); 
-	EXTI->RTSR1 |= (0x000004CD);    //enables rising trigger selection for interrupt 0, 1, and 2
-	EXTI->IMR1 |= (0x000004CD);     //enables interrupt mask register for interrupt 0, 1, and 2
+	EXTI->FTSR1 |= (0x480);	//enables falling trigger selection
+	EXTI->RTSR1 |= (0x000000D);    //enables rising trigger selection for interrupt 0, 1, and 2
+	EXTI->IMR1 |= (0x0000048D);     //enables interrupt mask register for interrupt 0, 1, and 2
 		
 }
 
