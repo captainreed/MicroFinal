@@ -10,6 +10,8 @@ void configureInterrupts()
 {
 RCC->AHB2ENR |=RCC_AHB2ENR_GPIOAEN;     //enables GPIO_A clock
 RCC->AHB2ENR |=RCC_AHB2ENR_GPIOBEN;     //enables GPIO_A clock
+RCC->AHB2ENR |=RCC_AHB2ENR_GPIOEEN;     //enables GPIO_A clock
+	
 	GPIOA->MODER &=(0xFFFFFF0C);    //sets GPIO A pins 0, 2, and 3 for input mode
 	GPIOA->PUPDR &=(0xFFFFFF0C);    //sets GPIO A pins 0, 2, and 3 to pull-down mode
   GPIOA->PUPDR |=(0x000000A2);

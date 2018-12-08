@@ -35,24 +35,29 @@ char timeNumberChar[2];
 
 int display_time = 0;
 
-//top button
-void EXTI3_IRQHandler(void) {
-//if(loop_recording){
-//	loop_recording = false;
-//	LCD_Clear();
-//	LCD_DisplayString((uint8_t*)"rec0");
-//}
-//else{
+//delay button
+void EXTI9_5_IRQHandler(void)
+{
 	debounce(debounceVal);
 	//record_pending = true;
 	loop_recording = true;
 	LCD_Clear();
 	LCD_DisplayString((uint8_t*)"rec1");
-//}
 
 EXTI->PR1 |= EXTI_PR1_PIF3;
 }
-//center button
+
+
+//record button
+void EXTI3_IRQHandler(void) {
+	debounce(debounceVal);
+	loop_recording = true;
+	LCD_Clear();
+	LCD_DisplayString((uint8_t*)"rec1");
+EXTI->PR1 |= EXTI_PR1_PIF3;
+}
+
+//Loop Button
 void EXTI0_IRQHandler(void) {
 	debounce(debounceVal);
 if(loop_playing){
@@ -68,6 +73,7 @@ else{
 EXTI->PR1 |= EXTI_PR1_PIF0;
 }
 
+//clear button
 void EXTI15_10_IRQHandler(void) {
 	for(int i=0; i<samplesPerLoop; i++) {
 		data[i]=0;
@@ -83,7 +89,8 @@ void EXTI15_10_IRQHandler(void) {
 	uint16_t buffer=0;
 	EXTI->PR1 |= EXTI_PR1_PIF10;
 }
-//right most button
+
+//overdrive button
 void EXTI2_IRQHandler(void) {	
 		debounce(debounceVal);
 if(overdrive_active){
@@ -157,7 +164,6 @@ if(loop_recording)
 		playback_index++;
 		playback_index = playback_index%samplesPerLoop;			
 	}
-	
 }
 
 void ADC1_2_IRQHandler(void) {
@@ -179,47 +185,7 @@ DAC_initialize();
 initEffects();
 initLED();
 LCD_Initialization();
-	int a=0;
-GPIOE->ODR |= (0x1000);	//enables PE12 
-	for(int i=0; i<15000; i++) {
-		a++;
-	}
-	a=0;
-	GPIOE->ODR |= (0x2000);	//enables PE13 
-	for(int i=0; i<15000; i++) {
-		a++;
-	}
-	a=0;
-		GPIOE->ODR |= (0x4000);	//enables PE14
-	for(int i=0; i<15000; i++) {
-		a++;
-	}
-	a=0;
-		GPIOE->ODR |= (0x8000);	//enables PE15
-	for(int i=0; i<15000; i++) {
-		a++;
-	}
-		a=0;
-		GPIOE->ODR &= (0xFFFFEFFF);	//disables PE12
-	for(int i=0; i<15000; i++) {
-		a++;
-	}
-	a=0;
-		GPIOE->ODR &= (0xFFFFDFFF);	//disables PE13
-	for(int i=0; i<15000; i++) {
-		a++;
-	}
-	a=0;
-		GPIOE->ODR &= (0xFFFFBFFF);	//disables PE14
-	for(int i=0; i<15000; i++) {
-		a++;
-	}
-	a=0;
-		GPIOE->ODR &= (0xFFFF7FFF);	//disables PE15
-	for(int i=0; i<15000; i++) {
-		a++;
-	}
-	SysTick->CTRL |= 1; //enable sysTick
+SysTick->CTRL |= 1; //enable sysTick
 while(1)
 {}
 }
