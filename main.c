@@ -66,6 +66,21 @@ else{
 }
 EXTI->PR1 |= EXTI_PR1_PIF0;
 }
+void EXTI15_10_IRQHandler(void) {
+	for(int i=0; i<samplesPerLoop; i++) {
+		data[i]=0;
+	}
+	bool loop_playing = false;
+	bool loop_recording = false;
+	bool overdrive_active = false;
+	bool delay_active = false;
+	bool record_pending = false;
+	int recording_index = 0;
+	int playback_index = 0;
+	uint16_t LEDcode=0;
+	uint16_t buffer=0;
+	EXTI->PR1 |= EXTI_PR1_PIF10;
+}
 //right most button
 void EXTI2_IRQHandler(void) {	
 		debounce(debounceVal);
