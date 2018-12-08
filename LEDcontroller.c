@@ -86,5 +86,11 @@ void writeLED(uint16_t data)
 	if(data==6) {
 		GPIOE->ODR &= (0xFFFFBFFF);	//disables PE14
 	}
+	if(data==9) {
+				GPIOE->ODR &= (0xFFFFBFFF);	//disables PE14
+		GPIOE->ODR &= (0xFFFFDFFF);	//disables PE13
+		GPIOE->ODR &= (0xFFFFEFFF);	//disables PE12
+		GPIOE->ODR &= (0xFFFF7FFF);	//disables PE15
+	}
 			
 }
