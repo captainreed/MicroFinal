@@ -44,7 +44,7 @@ void EXTI9_5_IRQHandler(void)
 	LCD_Clear();
 	LCD_DisplayString((uint8_t*)"rec1");
 
-EXTI->PR1 |= EXTI_PR1_PIF3;
+EXTI->PR1 |= EXTI_PR1_PIF6;
 }
 
 
