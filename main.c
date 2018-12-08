@@ -31,17 +31,17 @@ int display_time = 0;
 
 //top button
 void EXTI3_IRQHandler(void) {
-if(loop_recording){
-	loop_recording = false;
-	LCD_Clear();
-	LCD_DisplayString((uint8_t*)"rec0");
-}
-else{
+//if(loop_recording){
+//	loop_recording = false;
+//	LCD_Clear();
+//	LCD_DisplayString((uint8_t*)"rec0");
+//}
+//else{
 	//record_pending = true;
 	loop_recording = true;
 	LCD_Clear();
 	LCD_DisplayString((uint8_t*)"rec1");
-}
+//}
 EXTI->PR1 |= EXTI_PR1_PIF3;
 }
 //center button
@@ -100,15 +100,25 @@ void SysTick_Handler(void)  {
 	}
 		if(loop_playing)
 		{
-		if(overdrive_active)
-		{
-		if(data[playback_index] > ODCutOffValue){writeDAC(ODCutOffValue);}
-		} else {
-		writeDAC(data[playback_index]);
-		}
-		handleEffects(data, overdrive_active, delay_active, recording_index, playback_index);
-		playback_index++;
-		playback_index = playback_index%samplesPerLoop;
+//			if(delay_active)
+//			{
+//				if(playback_index >= 4000){data[playback_index-4000] = data[playback_index];}
+//				else{data[samplesPerLoop - playback_index -  4000] = data[playback_index];}
+//			}
+				
+//			if(overdrive_active)
+//			{
+//			if(data[playback_index] > ODCutOffValue){writeDAC(ODCutOffValue);}
+//			} else {
+//			writeDAC(data[playback_index]);
+//			}
+
+			//handleEffects(data, overdrive_active, delay_active, recording_index, playback_index);
+			
+			
+			writeDAC(data[playback_index]);
+			playback_index++;
+			playback_index = playback_index%samplesPerLoop;
 	}
 }
 
