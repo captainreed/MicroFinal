@@ -12,6 +12,7 @@
 
 #define samplesPerLoop 48000
 #define ODCutOffValue 0x0750
+#define debounceVal 20000
 
 uint16_t data[samplesPerLoop] = {0};
 bool loop_playing = false;
@@ -21,8 +22,13 @@ bool delay_active = false;
 bool record_pending = false;
 int recording_index = 0;
 int playback_index = 0;
-uint16_t dummy=0;
-uint32_t averageLED=0;
+uint16_t LEDcode=0;
+uint16_t buffer=0;
+void debounce(int duration) {
+	for(int i=0; i<duration; i++) {
+		(void)0;
+	}
+}
 
 char operationString[6];
 char timeNumberChar[2];
@@ -37,15 +43,18 @@ void EXTI3_IRQHandler(void) {
 //	LCD_DisplayString((uint8_t*)"rec0");
 //}
 //else{
+	debounce(debounceVal);
 	//record_pending = true;
 	loop_recording = true;
 	LCD_Clear();
 	LCD_DisplayString((uint8_t*)"rec1");
 //}
+
 EXTI->PR1 |= EXTI_PR1_PIF3;
 }
 //center button
 void EXTI0_IRQHandler(void) {
+	debounce(debounceVal);
 if(loop_playing){
 	loop_playing = false;
 	LCD_Clear();
@@ -58,8 +67,25 @@ else{
 }
 EXTI->PR1 |= EXTI_PR1_PIF0;
 }
+
+void EXTI15_10_IRQHandler(void) {
+	for(int i=0; i<samplesPerLoop; i++) {
+		data[i]=0;
+	}
+	bool loop_playing = false;
+	bool loop_recording = false;
+	bool overdrive_active = false;
+	bool delay_active = false;
+	bool record_pending = false;
+	int recording_index = 0;
+	int playback_index = 0;
+	uint16_t LEDcode=0;
+	uint16_t buffer=0;
+	EXTI->PR1 |= EXTI_PR1_PIF10;
+}
 //right most button
 void EXTI2_IRQHandler(void) {	
+		debounce(debounceVal);
 if(overdrive_active){
 overdrive_active = false;
 LCD_Clear();
@@ -74,19 +100,7 @@ EXTI->PR1 |= EXTI_PR1_PIF2;
 }
 
 void SysTick_Handler(void)  {
-//if(playback_index%4000 == 0){
-////sprintf(timeNumberChar, "%d", display_time);
-//}
-//if(record_pending && playback_index ==0)
-//{
-//loop_recording = true;
-//record_pending = false;
-//}	
-//if(loop_recording && recording_index == 0){
-//loop_recording = false;
-//record_pending = false;
-//}
-	if(loop_recording)
+if(loop_recording)
 	{
 		readADC();	//store ADC val in data
 		if(loop_playing){playback_index = recording_index;}
@@ -97,29 +111,53 @@ void SysTick_Handler(void)  {
 		LCD_Clear();
 		LCD_DisplayString((uint8_t*)"loop1");
 		}
+		if(buffer >= 100) {
+			buffer=0;
+			LEDcode=(LEDcode+7)%8;
+			writeLED(LEDcode);
+		}
+		buffer++;
 	}
-		if(loop_playing)
+	if(loop_playing)
+	{
+		if(delay_active)
+			{
+				if(playback_index >= 4000){data[playback_index-4000] = data[playback_index];}
+				else{data[samplesPerLoop - playback_index -  4000] = data[playback_index];}
+			}
+			
+		if(overdrive_active)
 		{
-//			if(delay_active)
-//			{
-//				if(playback_index >= 4000){data[playback_index-4000] = data[playback_index];}
-//				else{data[samplesPerLoop - playback_index -  4000] = data[playback_index];}
-//			}
-				
-//			if(overdrive_active)
-//			{
-//			if(data[playback_index] > ODCutOffValue){writeDAC(ODCutOffValue);}
-//			} else {
-//			writeDAC(data[playback_index]);
-//			}
-
-			//handleEffects(data, overdrive_active, delay_active, recording_index, playback_index);
-			
-			
+			if(data[playback_index] > ODCutOffValue){
+				writeDAC(ODCutOffValue);
+			}
+			if(loop_recording) {
+			//do nothing
+		} else {
+			if(buffer >= 50) {
+				buffer=0;
+				LEDcode=(LEDcode+1)%8;
+				writeLED(LEDcode);
+			}
+			buffer++;
+		}
+		} else {
 			writeDAC(data[playback_index]);
-			playback_index++;
-			playback_index = playback_index%samplesPerLoop;
+		if(loop_recording) {
+			//do nothing
+		} else {
+			if(buffer >= 200) {
+				buffer=0;
+				LEDcode=(LEDcode+1)%8;
+				writeLED(LEDcode);
+			}
+			buffer++;
+		}
+		}
+		playback_index++;
+		playback_index = playback_index%samplesPerLoop;			
 	}
+	
 }
 
 void ADC1_2_IRQHandler(void) {
