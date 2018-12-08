@@ -10,8 +10,7 @@ void configureInterrupts()
 {
 RCC->AHB2ENR |=RCC_AHB2ENR_GPIOAEN;     //enables GPIO_A clock
 RCC->AHB2ENR |=RCC_AHB2ENR_GPIOBEN;     //enables GPIO_A clock
-RCC->AHB2ENR |=RCC_AHB2ENR_GPIOEEN;     //enables GPIO_A clock
-	
+	RCC->AHB2ENR |=RCC_AHB2ENR_GPIOEEN;
 	GPIOA->MODER &=(0xFFFFFF0C);    //sets GPIO A pins 0, 2, and 3 for input mode
 	GPIOA->PUPDR &=(0xFFFFFF0C);    //sets GPIO A pins 0, 2, and 3 to pull-down mode
   GPIOA->PUPDR |=(0x000000A2);
@@ -33,10 +32,12 @@ RCC->AHB2ENR |=RCC_AHB2ENR_GPIOEEN;     //enables GPIO_A clock
 	
 	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;   //enables SYSCFG
 	SYSCFG->EXTICR[0] &= (0xFFFF00F0);      //ties interrupts to GPIO A
-	SYSCFG->EXTICR[2] &= (0xFFFF00F0);      //ties interrupts to GPIO B
-	SYSCFG->EXTICR[3] &= (0xFFFF4FF);      //ties interrupts to GPIO E
-	EXTI->RTSR1 |= (0x000004CC);    //enables rising trigger selection for interrupt 0, 1, and 2
-	EXTI->IMR1 |= (0x000004CC);     //enables interrupt mask register for interrupt 0, 1, and 2
+	SYSCFG->EXTICR[2] &= (0xFFFFF0FF);      //ties interrupts to GPIO B
+	SYSCFG->EXTICR[2] |= (0x100);
+	SYSCFG->EXTICR[3] &= (0xFFFFF0FF);      //ties interrupts to GPIO E
+	SYSCFG->EXTICR[3] |= (0x00000400); 
+	EXTI->RTSR1 |= (0x000004CD);    //enables rising trigger selection for interrupt 0, 1, and 2
+	EXTI->IMR1 |= (0x000004CD);     //enables interrupt mask register for interrupt 0, 1, and 2
 		
 }
 
